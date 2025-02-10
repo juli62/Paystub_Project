@@ -1,20 +1,21 @@
 import csv
 from django.core.mail import EmailMessage
 from django.http import JsonResponse
-import pdfkit
 import pandas as pd
 from weasyprint import HTML
 from .paystub import config_paystub
 from datetime import datetime
 
+succesful_emails_sent = []
 
 
-
+#Creates paystub pdf from the HTML
 def create_paystub(html):
     
     pdf_bytes = HTML(string=html).write_pdf()
     return pdf_bytes
 
+#Reads the csv file and fills out the Html data with it
 def generate_paystub(csv_file,country,company):
     df = pd.read_csv(csv_file)
     df.columns = df.columns.str.strip()  
@@ -26,11 +27,14 @@ def generate_paystub(csv_file,country,company):
                                paystub['social_discount_amount'],paystub["taxes_discount_amount"],paystub["other_discount_amount"],paystub["gross_salary"],
                                paystub["gross_payment"],paystub["net_payment"],paystub["period"])
         
-        
+       
     csv_pdf =  create_paystub(html)
     send_email(paystub["email"], csv_pdf, paystub["period"],country)
+    succesful_emails_sent.append(paystub['email'])
     return csv_pdf
 
+
+#Sends email with PDF
 def send_email(email, pdf, date,country):
     
     if country =="USA":
@@ -47,6 +51,7 @@ def send_email(email, pdf, date,country):
     email_message.attach(filename=f"paystub_{date}.pdf", content=pdf, mimetype="application/pdf")
 
     email_message.send()
-    json_response = {"Success!":f"Email sent succesfully to{email} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"}
-    print(json_response)
-    return JsonResponse(json_response,status=200)
+
+
+
+

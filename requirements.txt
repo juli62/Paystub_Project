@@ -1,0 +1,5 @@
+Django~=5.1.6
+weasyprint~=64.0
+python-dotenv~=1.0.1
+pandas~=2.2.3
+python-decouple~=3.8

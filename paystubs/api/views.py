@@ -5,10 +5,11 @@ import csv
 import os
 from django.views.decorators.csrf import csrf_exempt
 from dotenv import load_dotenv
-from .serializers import generate_paystub, send_email
+from .serializers import generate_paystub, send_email, succesful_emails_sent
 from os import environ
 from datetime import datetime
 load_dotenv()
+
 
 USER_NAME = os.getenv("USER_NAME")
 USER_PASSWORD = os.getenv("USER_PASSWORD")
@@ -40,7 +41,14 @@ def csv_request(request):
             pdf_bytes = generate_paystub(uploaded_csv,country,company)
             response = HttpResponse(pdf_bytes, content_type='application/pdf')
             response['Content-Disposition'] = 'inline; filename="paystub.pdf"'
-            return response
+            
+            #Saves the JSON response with the Emails it's been sent to
+            json_response = {"Success!":f"Emails sent succesfully to {succesful_emails_sent} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"}
+            
+            #Empties the array for future batches
+            for elements in succesful_emails_sent:
+                succesful_emails_sent.remove(elements)
+            return JsonResponse(json_response,status=200)
 
         except Exception as e:
             return JsonResponse({"Error": str(e)}, status=500)

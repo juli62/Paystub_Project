@@ -4,6 +4,10 @@ from django.conf import settings
 from .style import css
 import os
 
+
+
+# Adds the CSV information to the HTML template, deternmines which language set will be used
+
 def config_paystub(company,country,full_name,email,position,health_discount_amount,social_discount_amount,taxes_discount_amount,other_discount_amount,gross_salary,gross_payment,net_payment,period):
    
    languageContent =[]
@@ -87,27 +91,26 @@ def config_paystub(company,country,full_name,email,position,health_discount_amou
         <strong>{languageContent[8]}:</strong> {period}
     </body>
     </html>"""
-   save_html(html)
    return html
     
 
 
 def get_logo(company,country):
    
+    #Gets logo from absolute path
+
     company_logo = os.path.join(settings.MEDIA_ROOT, f"{company}.png")
     
+    #If path doesn't exist it picks either one of the Default images depending on the language
     if not os.path.exists(company_logo): 
         if country == "USA":
            company_logo = os.path.join(settings.MEDIA_ROOT, f"defaultEN.png")  
         elif country == "DO":
              company_logo = os.path.join(settings.MEDIA_ROOT, f"defaultES.png")    
+   
+    # Turns image into a base64, so it is easier for the PDF to read
     with open(company_logo,"rb") as img:
         base64_string = base64.b64encode(img.read()).decode("utf-8")
     return f"data:image/png;base64,{base64_string}"
 
 
-#delete later
-def save_html(html_content, filename="output.html"):
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(html_content)
-   
