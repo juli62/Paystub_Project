@@ -28,9 +28,9 @@ def generate_paystub(csv_file,country,company):
                                paystub["gross_payment"],paystub["net_payment"],paystub["period"])
         
        
-    csv_pdf =  create_paystub(html)
-    send_email(paystub["email"], csv_pdf, paystub["period"],country)
-    succesful_emails_sent.append(paystub['email'])
+        csv_pdf =  create_paystub(html)
+        send_email(paystub["email"], csv_pdf, paystub["period"],country)
+        succesful_emails_sent.append(paystub['email'])
     return csv_pdf
 
 
