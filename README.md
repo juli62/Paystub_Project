@@ -17,4 +17,8 @@ curl -X POST "http://127.0.0.1:8000/process/?country=DO&credentials=AtDev+AtDev1
 
 
 ### Preview of the Paystub
-![image](https://github.com/user-attachments/assets/696d39fe-f0b1-4abd-94e1-a61b8218e1cf)
+###
+<p align="center">
+  
+<img src="https://github.com/user-attachments/assets/696d39fe-f0b1-4abd-94e1-a61b8218e1cf" /> 
+</p>
